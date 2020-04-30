@@ -26,15 +26,16 @@ def collect(task, mac):
         # Looking for MAC address in table
         # will not specify MAC as argument in command to use advantages of TextFSM and
         # to avoid checking correctness of MAC syntax
-        output = task.run(netmiko_send_command, command_string='show mac address-table', use_textfsm=True)
-        for out in output[0].result:
-            if out['destination_address'] == mac.lower():
-                dest_port = out['destination_port']
-                output1 = task.run(netmiko_send_command, command_string='show interface status', use_textfsm=True)
+        mac_table = task.run(netmiko_send_command, command_string='show mac address-table', use_textfsm=True)
+        intf_status = task.run(netmiko_send_command, command_string='show interface status', use_textfsm=True)
+
+        for maci in mac_table[0].result:
+            if maci['destination_address'] == mac.lower():
+                dest_port = maci['destination_port']
 
                 # Check if it's access port and ignore trunk ports
-                for out1 in output1[0].result:
-                    if out1['port'] == dest_port and out1['vlan'] != 'trunk':
+                for intf in intf_status[0].result:
+                    if intf['port'] == dest_port and intf['vlan'] != 'trunk':
                         mac_found = True
                         print(f"FOUND: {mac} -- {task.host.name} -- {dest_port}")
                         return
