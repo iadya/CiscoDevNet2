@@ -1,0 +1,12 @@
+SW1:
+  hostname: 10.0.0.11
+  username: cisco
+  password: cisco
+SW2:
+  hostname: 10.0.0.12
+  username: cisco
+  password: cisco
+SW3:
+  hostname: 10.0.0.13
+  username: cisco
+  password: cisco
